@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f6ee">
+    <meta name="description" content="在本地浏览器中批量为电子音乐调整均衡、混响与立体声，并导出 WAV。">
+    <title>Afterglow Studio — 清新电子音乐工作台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Afterglow Studio 首页">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M5 18.5c5.8-1.2 10.4-4.4 13.1-10.2 1.1 5.2 3.7 8.9 8.9 11.1-5.8 1.2-10.4 4.4-13.1 10.2C12.8 24.4 10.2 20.7 5 18.5Z" fill="currentColor"/>
+              <circle cx="23.5" cy="7.5" r="2.5" fill="#E9A95F"/>
+            </svg>
+          </span>
+          <span class="brand-name">afterglow<span>studio</span></span>
+        </a>
+        <div class="topbar-right">
+          <span class="local-badge"><span class="status-dot"></span>仅在此设备处理</span>
+          <button class="text-button" id="reset-button" type="button">重置参数</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="eyebrow-line"></span> YOUR SOUND, IN A NEW LIGHT</div>
+            <h1>把雨后的<span>清新感</span><br>调进每一首歌。</h1>
+            <p>给旋律一点空气，让人声更透亮。导入曲目，调出属于你的晴日声景，再批量导出高品质 WAV。</p>
+            <div class="hero-meta">
+              <span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m8 1.5 5 2v3.8c0 3.1-2.1 5.8-5 7.2-2.9-1.4-5-4.1-5-7.2V3.5l5-2Zm-2.1 6 1.4 1.4 2.9-3"/></svg>音频不离开本机</span>
+              <span class="meta-divider"></span>
+              <span>原文件始终保留</span>
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="sun"></div>
+            <div class="mountain mountain-back"></div>
+            <div class="mountain mountain-front"></div>
+            <div class="hill"></div>
+            <div class="art-glow"></div>
+            <div class="art-caption"><span>01 / 04</span><span>AFTER THE RAIN</span></div>
+          </div>
+        </section>
+
+        <section class="workspace">
+          <div class="workspace-heading">
+            <div>
+              <div class="section-kicker">YOUR LISTENING ROOM</div>
+              <h2>声音工作台</h2>
+            </div>
+            <div class="preset-wrap">
+              <label for="preset-select">快速灵感</label>
+              <select id="preset-select">
+                <option value="custom">自定义参数</option>
+                <option value="sunlight" selected>雨后晴日 · 清透人声</option>
+                <option value="color">彩色低音 · 柔亮空间</option>
+                <option value="club">午夜舞池 · 紧致律动</option>
+                <option value="vocal">人声前置 · 轻柔空气感</option>
+              </select>
+              <span class="select-chevron" aria-hidden="true">⌄</span>
+            </div>
+          </div>
+
+          <div class="studio-grid">
+            <section class="panel library-panel" aria-labelledby="library-title">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-overline">01 — SOURCE</div>
+                  <h3 id="library-title">曲目清单 <span id="track-count" class="count-pill">0</span></h3>
+                </div>
+                <button class="icon-button" id="clear-list" type="button" aria-label="清空曲目清单" title="清空曲目清单">
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 5.5h13M8 5.5V3.8h4v1.7m-6.7 0 .7 10.7h7.9l.7-10.7M8.2 8.2v5.1m3.6-5.1v5.1"/></svg>
+                </button>
+              </div>
+
+              <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="选择或拖放音频文件">
+                <div class="upload-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5V4m0 0L7.8 8.2M12 4l4.2 4.2M4 14.8v4.7h16v-4.7"/></svg>
+                </div>
+                <strong>把你的音乐放在这里</strong>
+                <span>拖放音频文件，或从设备中选择</span>
+                <div class="upload-actions">
+                  <button class="button button-dark button-small" id="choose-files" type="button">选择音频</button>
+                  <button class="button button-light button-small" id="choose-folder" type="button">导入整个文件夹</button>
+                </div>
+                <span class="format-hint">支持 MP3、WAV、FLAC、AAC、M4A、OGG 等浏览器可解码格式</span>
+              </div>
+              <input id="file-input" type="file" accept="audio/*,.flac,.m4a,.aac,.ogg,.opus" multiple hidden>
+              <input id="folder-input" type="file" accept="audio/*,.flac,.m4a,.aac,.ogg,.opus" webkitdirectory directory multiple hidden>
+
+              <div class="track-list" id="track-list" aria-live="polite">
+                <div class="empty-state" id="empty-state">
+                  <span class="empty-wave" aria-hidden="true">〰</span>
+                  <span>你的下一首心头好，会出现在这里。</span>
+                </div>
+              </div>
+              <div class="queue-note"><span class="note-icon">i</span>点击 ▶ 即时试听当前音色；最终导出由本机 Pedalboard 渲染。</div>
+            </section>
+
+            <section class="panel controls-panel" aria-labelledby="controls-title">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-overline">02 — TONE SHAPING</div>
+                  <h3 id="controls-title">塑造你的声音</h3>
+                </div>
+                <span class="live-indicator"><span></span> LIVE SETTINGS</span>
+              </div>
+
+              <div class="control-section eq-section">
+                <div class="control-section-heading">
+                  <div><h4>均衡器 <span class="unit-label">4-BAND PARAMETRIC EQ</span></h4><p>微调频段，让清澈不刺耳</p></div>
+                  <button class="mini-reset" type="button" data-reset="eq">重置</button>
+                </div>
+                <div class="eq-grid">
+                  <label class="eq-control">
+                    <span class="eq-value" id="eq-low-value">−0.5 <small>dB</small></span>
+                    <span class="eq-visual"><span class="eq-fill" id="eq-low-fill"></span><input id="eq-low" type="range" min="-6" max="6" step="0.5" value="-0.5" aria-label="低频 EQ 125 Hz"></span>
+                    <span class="eq-frequency">125<span> Hz</span></span><span class="eq-band">LOW</span>
+                  </label>
+                  <label class="eq-control">
+                    <span class="eq-value" id="eq-lowmid-value">0 <small>dB</small></span>
+                    <span class="eq-visual"><span class="eq-fill" id="eq-lowmid-fill"></span><input id="eq-lowmid" type="range" min="-6" max="6" step="0.5" value="0" aria-label="中低频 EQ 500 Hz"></span>
+                    <span class="eq-frequency">500<span> Hz</span></span><span class="eq-band">LOW MID</span>
+                  </label>
+                  <label class="eq-control">
+                    <span class="eq-value" id="eq-highmid-value">+1 <small>dB</small></span>
+                    <span class="eq-visual"><span class="eq-fill" id="eq-highmid-fill"></span><input id="eq-highmid" type="range" min="-6" max="6" step="0.5" value="1" aria-label="中高频 EQ 2.5 kHz"></span>
+                    <span class="eq-frequency">2.5<span> kHz</span></span><span class="eq-band">HIGH MID</span>
+                  </label>
+                  <label class="eq-control">
+                    <span class="eq-value" id="eq-air-value">+1.5 <small>dB</small></span>
+                    <span class="eq-visual"><span class="eq-fill" id="eq-air-fill"></span><input id="eq-air" type="range" min="-6" max="6" step="0.5" value="1.5" aria-label="高频空气感 EQ 8 kHz"></span>
+                    <span class="eq-frequency">8<span> kHz</span></span><span class="eq-band">AIR</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="control-section">
+                <div class="control-section-heading">
+                  <div><h4>空间与质感 <span class="unit-label">SPACE &amp; TEXTURE</span></h4><p>让人声浮现，让合成器呼吸</p></div>
+                </div>
+                <div class="slider-control">
+                  <div class="slider-label"><span>混响空间 <small>REVERB WET</small></span><strong id="reverb-value">8<span>%</span></strong></div>
+                  <input id="reverb" type="range" min="0" max="30" step="1" value="8" aria-label="混响空间">
+                  <div class="range-ends"><span>干净贴近</span><span>空灵辽阔</span></div>
+                </div>
+                <div class="slider-control compact-control">
+                  <div class="slider-label"><span>尾音长度 <small>DECAY</small></span><strong id="decay-value">1.8<span>s</span></strong></div>
+                  <input id="decay" type="range" min="0.5" max="4" step="0.1" value="1.8" aria-label="混响尾音长度">
+                </div>
+                <div class="slider-control compact-control">
+                  <div class="slider-label"><span>立体声宽度 <small>STEREO WIDTH</small></span><strong id="width-value">105<span>%</span></strong></div>
+                  <input id="width" type="range" min="70" max="130" step="1" value="105" aria-label="立体声宽度">
+                  <div class="range-ends"><span>收拢</span><span>展开</span></div>
+                </div>
+              </div>
+
+              <div class="control-section output-section">
+                <div class="control-section-heading">
+                  <div><h4>动态与导出 <span class="unit-label">OUTPUT</span></h4><p>从容控制峰值，保留更多细节</p></div>
+                </div>
+                <div class="output-row">
+                  <label class="slider-control threshold-control">
+                    <span class="slider-label"><span>压缩阈值 <small>THRESHOLD</small></span><strong id="threshold-value">−18<span> dB</span></strong></span>
+                    <input id="threshold" type="range" min="-36" max="-6" step="1" value="-18" aria-label="压缩阈值">
+                  </label>
+                  <label class="select-control">
+                    <span>导出采样率</span>
+                    <select id="sample-rate">
+                      <option value="48000" selected>48 kHz · 推荐</option>
+                      <option value="44100">44.1 kHz</option>
+                    </select>
+                  </label>
+                </div>
+                <label class="normalize-toggle">
+                  <input id="normalize" type="checkbox" checked>
+                  <span class="toggle-track"><span></span></span>
+                  <span class="toggle-copy"><strong>峰值安全输出</strong><small>将峰值控制在 −1 dBFS，避免数字削波</small></span>
+                  <span class="toggle-tag">RECOMMENDED</span>
+                </label>
+              </div>
+              <button class="button button-primary process-button" id="process-button" type="button">
+                <span class="process-icon" aria-hidden="true">✳</span><span id="process-label">处理全部曲目</span><span class="button-arrow" aria-hidden="true">↗</span>
+              </button>
+              <p class="process-footnote">处理会生成新的 WAV 文件；原音频不会被修改。</p>
+            </section>
+          </div>
+        </section>
+      </main>
+      <footer class="footer"><span>AFTERGLOW STUDIO</span><span>让每一段旋律，都有阳光落下的地方。</span><span>LOCAL AUDIO ENGINE · WAV 24-BIT</span></footer>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
